@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101827">
+<title>معرض رائد | كاشف إصدار PS4</title>
+<style>
+:root{--bg:#0b1220;--panel:#142238;--line:#2d405c;--txt:#f4f7fb;--muted:#aab8ca;--green:#37d6a0;--blue:#74b8ff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#1a3452,#0b1220 55%);color:var(--txt);font-family:system-ui,Tahoma,Arial;line-height:1.7}
+main{width:min(760px,92%);margin:38px auto}.card{background:#122036;border:1px solid var(--line);border-radius:18px;padding:22px;margin:14px 0}
+h1{text-align:center;font-size:clamp(25px,5vw,38px);margin:0}.sub{text-align:center;color:var(--muted);margin:5px 0 22px}
+.pill{display:inline-block;border:1px solid #28775e;background:#10382e;color:#9af2d1;padding:4px 12px;border-radius:30px;font-size:13px}
+.status{text-align:center;padding:22px 10px}.version{font-size:40px;font-weight:900;color:var(--green);margin:8px}
+button,.btn{display:inline-block;border:0;border-radius:11px;padding:12px 18px;background:var(--green);color:#061a15;font-weight:800;text-decoration:none;font-size:15px;cursor:pointer}
+.secondary{background:#20334e;color:#f4f7fb;border:1px solid var(--line)}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+input{background:#0b1728;border:1px solid var(--line);border-radius:10px;padding:12px;color:white;width:130px;font-size:17px;text-align:center}
+.small{font-size:13px;color:var(--muted)}.warn{border-color:#715d2c;background:#302817;color:#f8dfa0}
+.hidden{display:none}
+</style></head>
+<body><main>
+<div class="card">
+ <div style="text-align:center"><span class="pill">الموقع الرسمي لمعرض رائد</span></div>
+ <h1>معرض رائد للألعاب الإلكترونية</h1>
+ <p class="sub">PS4 · كشف إصدار النظام واختيار صفحة الاستضافة</p>
+ <div class="status">
+  <div id="state">جارٍ محاولة قراءة إصدار النظام من متصفح PS4...</div>
+  <div class="version" id="version">--</div>
+  <div id="result" class="small">سيتم عرض نتيجة الكشف هنا</div>
+ </div>
+ <div id="manual" class="row">
+  <label for="fw" class="small" style="align-self:center">إذا لم يقرأ المتصفح الإصدار، أدخله هنا:</label>
+  <input id="fw" inputmode="decimal" placeholder="13.60" aria-label="إصدار النظام">
+  <button class="secondary" onclick="checkManual()">تحقق</button>
+ </div>
+ <div class="row">
+  <a id="host" class="btn hidden" href="https://webkitty.arabpixel.net/" target="_blank" rel="noopener">فتح صفحة الاستضافة</a>
+  <a class="btn secondary" href="https://github.com/GoldHEN/GoldHEN" target="_blank" rel="noopener">مصدر GoldHEN</a>
+ </div>
+</div>
+<div class="card warn">
+ <b>مهم:</b> الكشف الآلي يعتمد على أن متصفح الجهاز يرسل رقم النظام ضمن معلومات المتصفح. بعض إصدارات متصفح PS4 لا تكشف الرقم؛ عندها استخدم خانة الإدخال. هذا الموقع يحدد صفحة الاستضافة فقط ولا ينفذ التهكير بنفسه.
+</div>
+<div class="card">
+ <b>معلومات التوافق</b>
+ <p class="small">صفحة WebKitty تعلن دعم نطاقات متعددة، منها 13.xx و14.00، وتعرض خيارات GoldHEN متعددة. تحقق من سلسلة الاستغلال المتاحة داخل الصفحة قبل تشغيلها؛ ذكر نطاق إصدار لا يضمن أن كل طريقة أو ملف يناسب كل جهاز.</p>
+ <p class="small">للتشغيل دون إنترنت، افتح صفحة الاستضافة أول مرة مع اتصال بالإنترنت واتبع تعليمات التخزين المؤقت الموجودة فيها. التخزين المؤقت تابع للاستضافة نفسها وليس لهذا الموقع التعريفي.</p>
+</div>
+<p class="small" style="text-align:center">© <span id="year"></span> معرض رائد للألعاب الإلكترونية</p>
+</main>
+<script>
+document.getElementById('year').textContent=new Date().getFullYear();
+const host='https://webkitty.arabpixel.net/';
+function supported(v){
+  // النطاقات المعلنة في صفحة WebKitty؛ لا يعني ذلك ضمان كل سلسلة تشغيل.
+  return (v>=4.50 && v<=5.07) || (v>=6.70 && v<=14.00);
+}
+function show(v,source){
+ const ver=document.getElementById('version'), state=document.getElementById('state'), result=document.getElementById('result'), link=document.getElementById('host');
+ ver.textContent=v.toFixed(2); state.textContent='تم التعرف على إصدار النظام '+(source==='auto'?'تلقائياً':'يدوياً');
+ if(supported(v)){result.textContent='الإصدار يقع ضمن النطاقات التي تعلن صفحة WebKitty دعمها. تحقق من طريقة الاستغلال داخل الصفحة.';link.href=host;link.classList.remove('hidden');}
+ else {result.textContent='لا يوجد توافق معلن لهذا الإصدار في صفحة الاستضافة المختارة.';link.classList.add('hidden');}
+}
+function parseVersion(){
+ const ua=navigator.userAgent||'';
+ const patterns=[/PlayStation\s*4[^0-9]{0,20}(\d{1,2}\.\d{1,2})/i,/PS4[^0-9]{0,20}(\d{1,2}\.\d{1,2})/i,/Firmware[\s/:=]+(\d{1,2}\.\d{1,2})/i];
+ for(const p of patterns){const m=ua.match(p);if(m){const v=Number(m[1]);if(Number.isFinite(v))return v;}}
+ return null;
+}
+function checkManual(){
+ const v=Number(document.getElementById('fw').value);
+ if(!Number.isFinite(v)||v<=0){document.getElementById('result').textContent='أدخل رقم إصدار صحيحاً مثل 13.60';return;}
+ show(v,'manual');
+}
+const detected=parseVersion();
+if(detected!==null){show(detected,'auto');document.getElementById('manual').classList.add('hidden');}
+else {document.getElementById('state').textContent='لم يتمكن المتصفح من إظهار رقم النظام تلقائياً.';document.getElementById('result').textContent='اكتب رقم الإصدار يدوياً، أو افتح الإعدادات ثم النظام ثم معلومات النظام.';}
+</script></body></html>
